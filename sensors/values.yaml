@@ -1,0 +1,6 @@
+# Default values for sensors.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+wio1:
+#  token: _xxx_
