@@ -2,5 +2,22 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-wio1:
-#  token: _xxx_
+cron_jobs:
+
+  - name: soil1
+    node: wio1
+    schedule: "* * * * *"
+    command: >
+      curl -i
+      -XPOST "http://influxdb-influxdb:8086/write?db=leetbase"
+      --data-binary "soil1,wionode=wio1 value=$(curl -k "https://us.wio.seeed.io/v1/node/GenericAInA0/analog?access_token=${API_TOKEN}" | jq .analog)"
+
+  - name: temp
+    node: wio2
+    schedule: "*/20 * * * *"
+    command: >
+      curl -i
+      -XPOaT "http://influxdb-influxdb:8086/write?db=leetbase"
+      --data-binary "temp,wionode=wio2 value=$(curl -k "https://us.wio.seeed.io/v1/node/GroveTempHumD1/temperature_f?access_token=${API_TOKEN}" | jq .fahrenheit_degree)"
+
+start_containers_in_debug: false

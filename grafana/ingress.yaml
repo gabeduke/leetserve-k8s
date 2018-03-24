@@ -7,10 +7,10 @@ metadata:
   namespace: default
 spec:
   rules:
-    - host: www.example.com
+    - host: idealeet
       http:
         paths:
           - backend:
-              serviceName: grafana-grafana
-              servicePort: 3000
+              serviceName: grafana
+              servicePort: 80
             path: /

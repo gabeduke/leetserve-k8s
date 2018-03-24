@@ -1,1 +1,7 @@
 sensors/values-override.yaml
+wioLeet/__pycache__
+wioLeet/charts/python/values-override.yaml
+wioLeet/charts/python/values-wio1.yaml
+wioLeet/src/__pycache__
+wioLeet/wioleet.egg-info
+wioLeet/config.yaml

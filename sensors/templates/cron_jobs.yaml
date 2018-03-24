@@ -1,0 +1,52 @@
+{{- range $index, $job := .Values.cron_jobs }}
+{{- if (not (eq $index 0)) }}
+---
+{{- end }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ $job.name }}
+  labels:
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version | replace "+" "_" }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+spec:
+  schedule: {{ $job.schedule | quote }}
+
+  jobTemplate:
+    spec:
+      backoffLimit: 0 # don't keep trying if this fails
+      activeDeadlineSeconds: 5
+      successfulJobsHistoryLimit: 1
+      failedJobsHistoryLimit: 1
+
+      template:
+        spec:
+          backoffLimit: 0 # don't keep trying if this fails
+          activeDeadlineSeconds: 5
+          successfulJobsHistoryLimit: 1
+          failedJobsHistoryLimit: 1
+          restartPolicy: Never
+
+          containers:
+            - name: {{ $job.name | quote }}
+              image: sequenceiq/busybox
+
+              env:
+              - name: API_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: sensors-secrets
+                    key: {{ $job.node | quote }}
+              command:
+                - "/bin/sh"
+
+              args:
+                - "-c"
+                {{- if $.Values.start_containers_in_debug }}
+                - "trap : TERM INT; sleep infinity & wait"
+                {{- else }}
+                - {{ $job.command | quote }}
+                {{- end }}
+
+{{- end }}
